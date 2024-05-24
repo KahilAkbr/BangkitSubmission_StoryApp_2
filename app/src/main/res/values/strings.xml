@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Storygram</string>
+    <string name="title_welcome_page">Welcome to Storygram!</string>
+    <string name="message_welcome_page">Start exploring the app by logging into your account. Select Login if you already have an account and select Register if you are a new user</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
+    <string name="login_title">Login to Storygram</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signup_title">Signup to Storygram</string>
+    <string name="username">Username</string>
+    <string name="no_acc">Don\'t have an account yet?</string>
+    <string name="toSignup">Signup Now</string>
+    <string name="haveAcc">Already have an account?</string>
+    <string name="toLogin">Login Here!</string>
+    <string name="password_alert">Password must not be less than 8 characters</string>
+    <string name="invalid_email">Enter your email accordingly</string>
+    <string name="login_sukses">Login Success</string>
+    <string name="start_share">Start sharing your story now!</string>
+    <string name="login_error">There is an error</string>
+    <string name="login_now">Login Now</string>
+    <string name="register_sukses">Signup Success</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="description">Description</string>
+    <string name="upload">Upload</string>
+    <string name="empty_image">Please upload an image first!</string>
+    <string name="upload_success">Upload Success!</string>
+    <string name="upload_success_msg">Successfully uploaded story</string>
+    <string name="choose_language">Select a language</string>
+    <string name="Logout">Logout</string>
+    <string name="switch_language">Language changed successfully</string>
+    <string name="logout_alert">Are you sure?</string>
+    <string name="logout">Logout</string>
+
+</resources>
