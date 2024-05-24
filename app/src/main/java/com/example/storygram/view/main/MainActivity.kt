@@ -18,13 +18,14 @@ import com.example.storygram.view.setting.SettingActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel : MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = ObtainViewModelFactory.obtain<MainViewModel>(this)
+        viewModel = ObtainViewModelFactory.obtain<MainViewModel>(this)
 
         binding.setting.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
@@ -41,32 +42,28 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        viewModel.getAllStory().observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
+        getStory()
+    }
 
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        getStory(result.data.listStory)
-                    }
+    private fun getStory() {
+        val adapter = StoryAdapter()
+        binding.rvStory.adapter = adapter
+        binding.rvStory.layoutManager = LinearLayoutManager(this)
 
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, getString(R.string.login_error), Toast.LENGTH_SHORT)
-                            .show()
-                    }
+        viewModel.getAllStory().observe(this){result->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    adapter.submitData(lifecycle, result.data)
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, getString(R.string.login_error), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
-    }
-
-    private fun getStory(result: List<ListStoryItem>?) {
-        val adapter = StoryAdapter()
-        adapter.submitList(result)
-        binding.rvStory.adapter = adapter
-        binding.rvStory.layoutManager = LinearLayoutManager(this)
     }
 }

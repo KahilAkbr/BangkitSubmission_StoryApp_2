@@ -1,10 +1,13 @@
 package com.example.storygram.data.remote.response
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "story")
 data class ListStoryItem(
 
     @field:SerializedName("photoUrl")
@@ -19,6 +22,7 @@ data class ListStoryItem(
     @field:SerializedName("lon")
     val lon: Float,
 
+    @PrimaryKey
     @field:SerializedName("id")
     val id: String,
 

@@ -5,6 +5,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.storygram.R
 import com.example.storygram.data.preference.LoginPreferences
 import com.example.storygram.data.remote.response.RegisterResponse
@@ -12,6 +17,8 @@ import com.example.storygram.data.remote.retrofit.ApiService
 import com.google.gson.Gson
 import retrofit2.HttpException
 import com.example.storygram.data.Result
+import com.example.storygram.data.local.StoryDatabase
+import com.example.storygram.data.local.StoryRemoteMediator
 import com.example.storygram.data.preference.LanguagePreferences
 import com.example.storygram.data.remote.response.AddStoryResponse
 import com.example.storygram.data.remote.response.ListStoryItem
@@ -19,6 +26,7 @@ import com.example.storygram.data.remote.response.LoginResponse
 import com.example.storygram.data.remote.response.StoryResponse
 import com.example.storygram.data.remote.retrofit.ApiConfig
 import com.example.storygram.utils.reduceFileImage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,7 +39,8 @@ import java.util.Locale
 class StoryRepository(
     private var apiService: ApiService,
     private val loginPreferences: LoginPreferences,
-    private val languagePreferences: LanguagePreferences
+    private val languagePreferences: LanguagePreferences,
+    private val storyDatabase: StoryDatabase
 ) {
     fun register(
         name: String,
@@ -72,15 +81,41 @@ class StoryRepository(
     fun getLoginStatus() = loginPreferences.getLoginStatus()
     suspend fun logout() = loginPreferences.logout()
 
-    fun getAllStory(): LiveData<Result<StoryResponse>> = liveData {
+//    fun getAllStory(): LiveData<Result<StoryResponse>> = liveData {
+//        emit(Result.Loading)
+//        try {
+//            val token = runBlocking {
+//                loginPreferences.getToken().first()
+//            }
+//            apiService = ApiConfig.getApiSevice(token.toString())
+//            val response = apiService.getAllStories()
+//            emit(Result.Success(response))
+//        } catch (e: HttpException) {
+//            val response = e.response()?.errorBody()?.string()
+//            val error = Gson().fromJson(response, StoryResponse::class.java)
+//            emit(Result.Error(error.message))
+//        } catch (e: Exception) {
+//            emit(Result.Error(e.message.toString()))
+//        }
+//    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getAllStory(coroutineScope: CoroutineScope): LiveData<Result<PagingData<ListStoryItem>>> = liveData {
         emit(Result.Loading)
         try {
             val token = runBlocking {
                 loginPreferences.getToken().first()
             }
             apiService = ApiConfig.getApiSevice(token.toString())
-            val response = apiService.getAllStories()
-            emit(Result.Success(response))
+            val response = Pager(
+                config = PagingConfig(pageSize = 5 ),
+                remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
+                pagingSourceFactory = { storyDatabase.storyDao().getAllStories() }
+            )
+            val couroutineFlow = response.flow.cachedIn(coroutineScope)
+            couroutineFlow.collect {pagingData->
+                emit(Result.Success(pagingData))
+            }
         } catch (e: HttpException) {
             val response = e.response()?.errorBody()?.string()
             val error = Gson().fromJson(response, StoryResponse::class.java)
@@ -162,10 +197,11 @@ class StoryRepository(
         fun getInstance(
             apiService: ApiService,
             preferences: LoginPreferences,
-            preferences2: LanguagePreferences
+            preferences2: LanguagePreferences,
+            storyDatabase : StoryDatabase
         ): StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService, preferences, preferences2).also {
+                instance ?: StoryRepository(apiService, preferences, preferences2, storyDatabase).also {
                     instance = it
                 }
             }

@@ -1,6 +1,7 @@
 package com.example.storygram.di
 
 import android.content.Context
+import com.example.storygram.data.local.StoryDatabase
 import com.example.storygram.data.preference.LanguagePreferences
 import com.example.storygram.data.preference.LoginPreferences
 import com.example.storygram.data.preference.dataStore
@@ -15,6 +16,7 @@ object Injection {
         val user = runBlocking { pref.getToken().first() }
         val apiService = ApiConfig.getApiSevice(user.toString())
         val pref2 = LanguagePreferences.getInstance(context.dataStore)
-        return StoryRepository.getInstance(apiService, pref, pref2)
+        val database = StoryDatabase.getDatabase(context)
+        return StoryRepository.getInstance(apiService, pref, pref2, database)
     }
 }

@@ -30,8 +30,14 @@ interface ApiService {
         @Field("password") password: String
     ): LoginResponse
 
+//    @GET("stories")
+//    suspend fun getAllStories(): StoryResponse
+
     @GET("stories")
-    suspend fun getAllStories(): StoryResponse
+    suspend fun getAllStories(
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 20
+    ): StoryResponse
 
     @Multipart
     @POST("stories")
