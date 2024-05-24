@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import com.example.storygram.R
-import com.example.storygram.utils.EmailValidator
+import com.example.storygram.utils.isEmailValid
 
 class EditText @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -61,7 +61,7 @@ class EditText @JvmOverloads constructor(
                         before: Int,
                         count: Int
                     ) {
-                        error = if (!EmailValidator.validate(s.toString())) {
+                        error = if (!isEmailValid(s.toString())) {
                             context.getString(R.string.invalid_email)
                         } else {
                             null

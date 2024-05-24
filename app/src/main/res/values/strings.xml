@@ -32,5 +32,8 @@
     <string name="switch_language">Language changed successfully</string>
     <string name="logout_alert">Are you sure?</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="location">Add Location</string>
+    <string name="location_permission_denied">Location Permission Denied, Activate in Settings</string>
 
 </resources>

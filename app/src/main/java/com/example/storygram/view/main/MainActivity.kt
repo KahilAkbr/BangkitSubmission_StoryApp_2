@@ -13,6 +13,7 @@ import com.example.storygram.data.remote.response.ListStoryItem
 import com.example.storygram.databinding.ActivityMainBinding
 import com.example.storygram.utils.ObtainViewModelFactory
 import com.example.storygram.view.add.AddActivity
+import com.example.storygram.view.maps.MapsActivity
 import com.example.storygram.view.setting.SettingActivity
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.addStory.setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.maps.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
 

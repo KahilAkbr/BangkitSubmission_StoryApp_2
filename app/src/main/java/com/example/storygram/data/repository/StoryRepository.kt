@@ -1,6 +1,7 @@
 package com.example.storygram.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
@@ -13,6 +14,7 @@ import retrofit2.HttpException
 import com.example.storygram.data.Result
 import com.example.storygram.data.preference.LanguagePreferences
 import com.example.storygram.data.remote.response.AddStoryResponse
+import com.example.storygram.data.remote.response.ListStoryItem
 import com.example.storygram.data.remote.response.LoginResponse
 import com.example.storygram.data.remote.response.StoryResponse
 import com.example.storygram.data.remote.retrofit.ApiConfig
@@ -131,6 +133,26 @@ class StoryRepository(
 
     suspend fun setLanguage(language: String) {
         languagePreferences.setLanguage(language)
+    }
+
+    fun getStoriesWithLocation(): LiveData<Result<List<ListStoryItem>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val token = runBlocking {
+                loginPreferences.getToken().first()
+            }
+            apiService = ApiConfig.getApiSevice(token.toString())
+            val response = apiService.getStoriesWithLocation()
+            val stories = response.listStory
+            emit(Result.Success(stories))
+        } catch (e: HttpException) {
+            val jsonInString = e.response()?.errorBody()?.string()
+            val errorBody = Gson().fromJson(jsonInString, StoryResponse::class.java)
+            emit(Result.Error(errorBody.message.toString()))
+        } catch (e: Exception) {
+            Log.d("StoryRepository", "getAllStoriesWithLocation: ${e.message.toString()}")
+            emit(Result.Error(e.message.toString()))
+        }
     }
 
     companion object {

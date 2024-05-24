@@ -33,4 +33,7 @@
     <string name="switch_language">Bahasa berhasil diubah</string>
     <string name="logout_alert">Apakah kamu yakin?</string>
     <string name="logout">Keluar</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="location">Tambahkan Lokasi</string>
+    <string name="location_permission_denied">Akses Lokasi Ditolak, Aktifkan Lewat Pengaturan</string>
 </resources>

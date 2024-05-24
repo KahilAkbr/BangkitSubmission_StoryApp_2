@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.storygram.R
 import com.example.storygram.data.Result
 import com.example.storygram.databinding.ActivityLoginBinding
-import com.example.storygram.utils.MotionVisibility.Companion.setMotionVisibilities
 import com.example.storygram.utils.ObtainViewModelFactory
+import com.example.storygram.utils.setMotionVisibilities
 import com.example.storygram.view.main.MainActivity
 import com.example.storygram.view.register.RegisterActivity
 
