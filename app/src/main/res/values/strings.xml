@@ -35,5 +35,6 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="location">Add Location</string>
     <string name="location_permission_denied">Location Permission Denied, Activate in Settings</string>
+    <string name="ok">OK</string>
 
 </resources>

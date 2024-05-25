@@ -56,6 +56,9 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
@@ -113,4 +116,8 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.inline)
+
+    //androidtest
+    androidTestImplementation(libs.espresso.intents) //IntentsTestRule
+    implementation(libs.espresso.idling.resource)
 }

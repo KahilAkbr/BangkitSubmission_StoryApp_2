@@ -10,9 +10,9 @@ object DataDummy {
                 "id$i",
                 "author $i",
                 "description $i",
-                i+1.toFloat(),
+                i + 1.toFloat(),
                 "id$i",
-                i+1.toFloat(),
+                i + 1.toFloat(),
             )
             items.add(story)
         }

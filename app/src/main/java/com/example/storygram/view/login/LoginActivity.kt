@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
                             viewModel.saveToken(result.data.loginResult.token)
                             alertBuilder.setTitle(getString(R.string.login_sukses))
                             alertBuilder.setMessage(getString(R.string.start_share))
-                            alertBuilder.setPositiveButton("OK") { _, _ ->
+                            alertBuilder.setPositiveButton(getString(R.string.ok)) { _, _ ->
                                 val intent = Intent(this, MainActivity::class.java)
                                 intent.flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                             binding.btnLogin.isClickable = true
                             alertBuilder.setTitle(getString(R.string.login_error))
                             alertBuilder.setMessage(result.error)
-                            alertBuilder.setPositiveButton("OK") { _, _ -> }.create().show()
+                            alertBuilder.setPositiveButton(R.string.ok) { _, _ -> }.create().show()
                         }
                     }
                 }

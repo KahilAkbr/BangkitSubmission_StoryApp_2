@@ -20,7 +20,6 @@ import com.example.storygram.utils.uriToFile
 import com.example.storygram.view.main.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import java.io.File
 import android.Manifest
 import android.location.Location
@@ -30,11 +29,11 @@ class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
     private var currentImageUri: Uri? = null
     private var file: File? = null
-    private lateinit var viewModel : AddViewModel
-    private lateinit var alertBuilder : AlertDialog.Builder
+    private lateinit var viewModel: AddViewModel
+    private lateinit var alertBuilder: AlertDialog.Builder
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var latitude : Float? = null
-    private var longitude : Float? = null
+    private var latitude: Float? = null
+    private var longitude: Float? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
@@ -56,9 +55,9 @@ class AddActivity : AppCompatActivity() {
 
         binding.locationSwitch.setOnCheckedChangeListener { _, isChecked ->
 
-            if(isChecked){
+            if (isChecked) {
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }else{
+            } else {
                 latitude = null
                 longitude = null
             }
@@ -114,7 +113,7 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadStory(){
+    private fun uploadStory() {
         val description = binding.edDescStory.text.toString()
 
         viewModel.uploadStory(this, file, description, lat = latitude, lon = longitude)
@@ -162,11 +161,15 @@ class AddActivity : AppCompatActivity() {
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
-        ) {isGranted ->
+        ) { isGranted ->
             if (!isGranted) {
                 binding.locationSwitch.isChecked = false
-                Toast.makeText(this, getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
-            }else{
+                Toast.makeText(
+                    this,
+                    getString(R.string.location_permission_denied),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
                 getLastLocation {
                     latitude = it?.latitude?.toFloat()
                     longitude = it?.longitude?.toFloat()

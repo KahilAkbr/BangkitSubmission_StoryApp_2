@@ -11,9 +11,10 @@ import com.example.storygram.data.remote.response.ListStoryItem
     version = 2,
     exportSchema = false
 )
-abstract class StoryDatabase : RoomDatabase(){
+abstract class StoryDatabase : RoomDatabase() {
     abstract fun storyDao(): StoryDao
     abstract fun remoteKeysDao(): RemoteKeysDao
+
     companion object {
         @Volatile
         private var INSTANCE: StoryDatabase? = null

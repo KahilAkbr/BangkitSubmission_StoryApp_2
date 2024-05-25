@@ -100,30 +100,31 @@ class StoryRepository(
 //    }
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getAllStory(coroutineScope: CoroutineScope): LiveData<Result<PagingData<ListStoryItem>>> = liveData {
-        emit(Result.Loading)
-        try {
-            val token = runBlocking {
-                loginPreferences.getToken().first()
+    fun getAllStory(coroutineScope: CoroutineScope): LiveData<Result<PagingData<ListStoryItem>>> =
+        liveData {
+            emit(Result.Loading)
+            try {
+                val token = runBlocking {
+                    loginPreferences.getToken().first()
+                }
+                apiService = ApiConfig.getApiSevice(token.toString())
+                val response = Pager(
+                    config = PagingConfig(pageSize = 5),
+                    remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
+                    pagingSourceFactory = { storyDatabase.storyDao().getAllStories() }
+                )
+                val couroutineFlow = response.flow.cachedIn(coroutineScope)
+                couroutineFlow.collect { pagingData ->
+                    emit(Result.Success(pagingData))
+                }
+            } catch (e: HttpException) {
+                val response = e.response()?.errorBody()?.string()
+                val error = Gson().fromJson(response, StoryResponse::class.java)
+                emit(Result.Error(error.message))
+            } catch (e: Exception) {
+                emit(Result.Error(e.message.toString()))
             }
-            apiService = ApiConfig.getApiSevice(token.toString())
-            val response = Pager(
-                config = PagingConfig(pageSize = 5 ),
-                remoteMediator = StoryRemoteMediator(storyDatabase, apiService),
-                pagingSourceFactory = { storyDatabase.storyDao().getAllStories() }
-            )
-            val couroutineFlow = response.flow.cachedIn(coroutineScope)
-            couroutineFlow.collect {pagingData->
-                emit(Result.Success(pagingData))
-            }
-        } catch (e: HttpException) {
-            val response = e.response()?.errorBody()?.string()
-            val error = Gson().fromJson(response, StoryResponse::class.java)
-            emit(Result.Error(error.message))
-        } catch (e: Exception) {
-            emit(Result.Error(e.message.toString()))
         }
-    }
 
     fun uploadStory(
         context: Context,
@@ -198,10 +199,15 @@ class StoryRepository(
             apiService: ApiService,
             preferences: LoginPreferences,
             preferences2: LanguagePreferences,
-            storyDatabase : StoryDatabase
+            storyDatabase: StoryDatabase
         ): StoryRepository =
             instance ?: synchronized(this) {
-                instance ?: StoryRepository(apiService, preferences, preferences2, storyDatabase).also {
+                instance ?: StoryRepository(
+                    apiService,
+                    preferences,
+                    preferences2,
+                    storyDatabase
+                ).also {
                     instance = it
                 }
             }

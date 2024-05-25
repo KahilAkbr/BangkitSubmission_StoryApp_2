@@ -29,7 +29,7 @@ class SettingActivity : AppCompatActivity() {
         binding.btnLogout.setOnClickListener {
             alertBuilder.setTitle(getString(R.string.logout))
             alertBuilder.setMessage(getString(R.string.logout_alert))
-            alertBuilder.setPositiveButton("OK") { _, _ ->
+            alertBuilder.setPositiveButton(R.string.ok) { _, _ ->
                 val intent = Intent(this, BoardingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
